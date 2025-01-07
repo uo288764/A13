@@ -1,3 +1,5 @@
+T/demo/src/main/resources/application.properties
+
 HELP.md
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
