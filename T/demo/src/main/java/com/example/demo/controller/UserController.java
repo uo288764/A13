@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,6 +60,19 @@ public class UserController {
         } catch (Exception err) {
             System.err.println("Exception: " + err.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    
+    @GetMapping("/user")
+    public ResponseEntity<User> getUserByEmail(@RequestParam String email) {
+        try {
+            User user = userService.getUserByEmail(email);
+            return ResponseEntity.ok(user);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 

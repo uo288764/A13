@@ -95,4 +95,15 @@ public class Userimp implements UserService {
     }
   }
 
+  @Override
+  public User getUserByEmail(String email) {
+      try {
+          return userRepo.findByEmail(email)
+              .orElseThrow(() -> new NoSuchElementException("User not found with email: " + email));
+      } catch (Exception err) {
+          System.err.println("Error retrieving user by email: " + err.getMessage());
+          throw err;
+      }
+  }
+
 }

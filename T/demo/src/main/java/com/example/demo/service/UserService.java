@@ -14,4 +14,6 @@ public interface UserService {
 
   User updateUserScore(String email, boolean win) throws Exception;
 
+  User getUserByEmail(String email);
+
 }
