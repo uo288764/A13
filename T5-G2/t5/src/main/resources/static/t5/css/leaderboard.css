@@ -1,0 +1,186 @@
+/* Estilos generales */
+body {
+    font-family: 'Arial', sans-serif;
+    background-image: url('/t5/images/fondoRanking2.png');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo más suave */
+    color: #fff;
+    padding-top: 20px;
+}
+
+/* Cabecera */
+h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #f1f1f1;
+}
+
+/* Fondo general de la tabla */
+.custom-table {
+    background-color: rgba(0, 0, 0, 0.6); /* Fondo oscuro con transparencia para resaltar el contenido */
+    border-radius: 12px; /* Esquinas redondeadas */
+    overflow: hidden; /* Ocultar bordes desbordantes */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Bordes suaves y luminosos */
+    color: #fff; /* Texto blanco */
+    font-family: 'Arial', sans-serif; /* Fuente clara */
+    font-size: 1rem; /* Tamaño estándar */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* Sombra sutil para dar profundidad */
+}
+
+/* Estilos de las cabeceras */
+.custom-table thead th {
+    background-color: rgba(0, 0, 50, 0.85); /* Fondo oscuro translúcido */
+    color: #fff; /* Texto blanco */
+    text-transform: uppercase; /* Texto en mayúsculas */
+    font-weight: bold; /* Texto en negrita */
+    padding: 15px; /* Espaciado interno */
+    border-bottom: 3px solid rgba(255, 255, 255, 0.2); /* Borde sutil en la parte inferior */
+}
+
+/* Estilos de las celdas (th y td) */
+.custom-table th, 
+.custom-table td {
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Bordes suaves */
+    text-align: center; /* Centrar texto */
+    padding: 12px; /* Espaciado interno */
+}
+
+/* Fondo de las filas alternas */
+.custom-table tbody tr:nth-of-type(odd) {
+    background-color: rgba(50, 50, 100, 0.5); /* Fondo suave para filas impares */
+}
+
+/* Hover para filas */
+.custom-table tbody tr:hover {
+    background-color: rgba(100, 100, 255, 0.6); /* Fondo claro al pasar el cursor */
+}
+
+/* Fondo para las celdas del cuerpo de la tabla */
+.custom-table tbody td {
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro para las celdas */
+}
+
+/* Fondo de las filas alternas (específicamente en el cuerpo) */
+.custom-table tbody tr:nth-of-type(odd) td {
+    background-color: rgba(50, 50, 100, 0.4); /* Fondo suave para celdas de filas impares */
+}
+
+/* Efectos al pasar el cursor sobre las cabeceras */
+.custom-table thead th:hover {
+    background-color: rgba(0, 0, 0, 0.8); /* Fondo oscuro más intenso en cabeceras al pasar el cursor */
+    cursor: pointer; /* Cursor en forma de mano para indicar interactividad */
+}
+
+/* Ajustes adicionales de la tabla para hacerla más profesional */
+.custom-table {
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.7); /* Sombra en el texto para resaltar sobre fondos complejos */
+}
+
+/* Mejorar visibilidad de los bordes */
+.custom-table thead th, 
+.custom-table tbody td {
+    border-color: rgba(255, 255, 255, 0.4); /* Bordes más luminosos y visibles */
+}
+
+/* Estilos de las filas alternas */
+.custom-table tbody tr:nth-of-type(even) {
+    background-color: rgba(30, 30, 70, 0.5); /* Fondo suave para las filas pares */
+}
+
+
+
+/* Estilo para el selector de filas */
+#rowsPerPageSelect {
+    display: inline-block;
+    width: auto;
+    margin-left: 10px;
+    background-color: #333;
+    color: #f1f1f1;
+}
+
+/* Input de búsqueda */
+.input-group .form-control {
+    border-radius: 0;
+    background-color: #333;
+    color: #f1f1f1;
+}
+
+.input-group-text {
+    background-color: #333;
+    border-color: #444;
+    color: #f1f1f1;
+}
+
+/* Paginación */
+#paginationControls {
+    padding-top: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+#paginationControls .page-item {
+    border: 1px solid #444;
+    border-radius: 5px;
+    margin: 0 5px;
+}
+
+#paginationControls .page-item a {
+    color: #f1f1f1;
+    text-decoration: none;
+    padding: 5px 10px;
+}
+
+#paginationControls .page-item.active a {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+#paginationControls .page-item.disabled a {
+    color: #666;
+}
+
+/* Buscador */
+.input-group {
+    margin-left: 15px;
+}
+
+/* Estilo para las filas del ranking */
+#leaderboardTable td, #leaderboardTable th {
+    text-align: center;
+}
+
+#leaderboardTable tr:nth-child(1) td:first-child {
+    color: #ffd700; /* Oro */
+    font-weight: bold;
+}
+
+#leaderboardTable tr:nth-child(2) td:first-child {
+    color: #c0c0c0; /* Plata */
+    font-weight: bold;
+}
+
+#leaderboardTable tr:nth-child(3) td:first-child {
+    color: #cd7f32; /* Bronce */
+    font-weight: bold;
+}
+
+body {
+    background: url('/t5/images/leaderboard-banner.jpg') no-repeat center center fixed;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+}
+
+.content-overlay {
+    background: rgba(0, 0, 0, 0.6);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+footer {
+    margin-bottom: 20px; 
+    padding: 10px 0;
+}
