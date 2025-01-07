@@ -17,6 +17,7 @@
 package com.g2.Game;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -41,7 +42,10 @@ import org.springframework.web.client.RestTemplate;
 
 import com.commons.model.Gamemode;
 import com.g2.Interfaces.ServiceManager;
+import com.g2.Model.User;
 import com.g2.Service.AchievementService;
+import com.g2.Service.LeaderboardService;
+import com.g2.dto.ExternalUserDto;
 
 //Qui introduco tutte le chiamate REST per la logica di gioco/editor
 @CrossOrigin
@@ -55,6 +59,9 @@ public class GameController {
 
     @Autowired
     private AchievementService achievementService;
+
+    @Autowired
+    private LeaderboardService leaderboardService;
 
     //Logger 
     private static final Logger logger = LoggerFactory.getLogger(GameController.class);
@@ -310,39 +317,70 @@ public class GameController {
         return createErrorResponse("[/RUN] partita eliminata", "5");
     }
 
-    private ResponseEntity<String> gestisciPartita(Map<String, String> userData, GameLogic gameLogic, Boolean isGameEnd, int robotScore, String playerId) {
-        if (userData.get("coverage") != null && !userData.get("coverage").isEmpty()) {
-            // Calcolo copertura e punteggio utente
-            // il primo è covered e il secondo è missed
-            int[] lineCoverage = getCoverage(userData.get("coverage"), "LINE");
-            int[] branchCoverage = getCoverage(userData.get("coverage"), "BRANCH");
-            int[] instructionCoverage = getCoverage(userData.get("coverage"), "INSTRUCTION");
+    private ResponseEntity<String> gestisciPartita(
+        Map<String, String> userData, 
+        GameLogic gameLogic, 
+        Boolean isGameEnd, 
+        int robotScore, 
+        String playerId) {
+    
+    if (userData.get("coverage") != null && !userData.get("coverage").isEmpty()) {
+        // Calculate coverage and user score
+        int[] lineCoverage = getCoverage(userData.get("coverage"), "LINE");
+        int[] branchCoverage = getCoverage(userData.get("coverage"), "BRANCH");
+        int[] instructionCoverage = getCoverage(userData.get("coverage"), "INSTRUCTION");
 
-            int lineCov = LineCoverage(userData.get("coverage"));
-            logger.info("[GAMECONTROLLER] /run: LineCov {}", lineCov);
+        int lineCov = LineCoverage(userData.get("coverage"));
+        logger.info("[GAMECONTROLLER] /run: LineCov {}", lineCov);
 
-            int userScore = gameLogic.GetScore(lineCov);
-            logger.info("[GAMECONTROLLER] /run: user_score {}", userScore);
+        int userScore = gameLogic.GetScore(lineCov);
+        logger.info("[GAMECONTROLLER] /run: user_score {}", userScore);
 
-            // Salvo i dati del turno
-            gameLogic.playTurn(userScore, robotScore);
+        // Save the turn data
+        gameLogic.playTurn(userScore, robotScore);
 
-            // Controllo fine partita
-            if (isGameEnd || gameLogic.isGameEnd()) {
-                activeGames.remove(playerId);
-                logger.info("[GAMECONTROLLER] /run: risposta inviata con GameEnd true");
-                return createResponseRun(userData, robotScore, userScore, true, lineCoverage, branchCoverage, instructionCoverage);
-            } else {
-                logger.info("[GAMECONTROLLER] /run: risposta inviata con GameEnd false");
-                return createResponseRun(userData, robotScore, userScore, false, lineCoverage, branchCoverage, instructionCoverage);
-            }
+        // Check if the game has ended
+        if (isGameEnd || gameLogic.isGameEnd()) {
+            activeGames.remove(playerId);
+            logger.info("[GAMECONTROLLER] /run: risposta inviata con GameEnd true");
+
+            // Fetch user details
+            List<User> users = (List<User>) serviceManager.handleRequest("T23", "GetUsers");
+            Long userId = Long.parseLong(playerId);
+            User user = users.stream().filter(u -> u.getId() == userId).findFirst().orElse(null);
+            String email = user.getEmail();
+            String name = user.getName();
+            String surname = user.getSurname();
+
+            boolean win = userScore > robotScore;
+
+            // Create ExternalUserDto
+            ExternalUserDto userDto = new ExternalUserDto();
+            userDto.setUserId(user.getId());
+            userDto.setEmail(user.getEmail());
+            userDto.setFirstName(user.getName());
+            userDto.setLastName(user.getSurname());
+            userDto.setRank(2000);
+            userDto.setGamesPlayed(1);
+            userDto.setGamesWon(win ? 1 : 0);
+            userDto.setGamesRate(win ? 100.0 : 0.0);
+
+            String responseMessage = leaderboardService.handleUserScore(email, userDto, win);
+            //logger.info("[GAMECONTROLLER] Leaderboard update: {}", responseMessage);
+
+            return createResponseRun(userData, robotScore, userScore, true, lineCoverage, branchCoverage, instructionCoverage);
+
         } else {
-            // Errori di compilazione
-            logger.info("[GAMECONTROLLER] /run: risposta inviata errori di compilazione");
-            return createResponseRun(userData, 0, 0, false, null, null, null);
+            logger.info("[GAMECONTROLLER] /run: risposta inviata con GameEnd false");
+            return createResponseRun(userData, robotScore, userScore, false, 
+                                     lineCoverage, branchCoverage, instructionCoverage);
         }
+    } else {
+        // Compilation errors
+        logger.info("[GAMECONTROLLER] /run: risposta inviata errori di compilazione");
+        return createResponseRun(userData, 0, 0, false, null, null, null);
     }
-
+}
     //metodo di supporto per creare la risposta
     private ResponseEntity<String> createResponseRun(
             Map<String, String> userData, int robotScore,
